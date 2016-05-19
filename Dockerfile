@@ -11,7 +11,7 @@ ENV CONFIG_JVM_ARGS '-Djava.security.egd=file:/dev/./urandom'
 RUN perl gdown.pl 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdbURhaE16NElXbjA' 'wls1036_generic.jar'
 
 #Download silence mode script
-RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdRXNoMndCMUllMGs' -O wls-silent.xml
+RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdS0N5a1VOYVptZEE' -O wls-silent.xml
 
 RUN mkdir /root/Oracle && \
     chmod a+xr /root/Oracle
@@ -28,7 +28,6 @@ RUN mv create-wls-domain.py /root/Oracle && \
 WORKDIR /root/Oracle/Middleware
 
 RUN /root/Oracle/Middleware/wlserver_10.3/common/bin/wlst.sh -skipWLSModuleScanning /root/Oracle/create-wls-domain.py
-
 
 WORKDIR /
 
