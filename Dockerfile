@@ -6,6 +6,7 @@ USER root
 
 ENV PATH $PATH:/root/Oracle/Middleware/wlserver_10.3/common/bin:/root/Oracle/Middleware/user_projects/domains/base_domain/bin
 ENV CONFIG_JVM_ARGS '-Djava.security.egd=file:/dev/./urandom'
+ENV JAVA_HOME $JAVA16_HOME
 
 #Download weblogic 10.3.6
 RUN perl gdown.pl 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdbURhaE16NElXbjA' 'wls1036_generic.jar'
@@ -16,7 +17,7 @@ RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0
 RUN mkdir /root/Oracle && \
     chmod a+xr /root/Oracle
 
-RUN /root/jdk/jdk1.6/bin/java -jar wls1036_generic.jar -mode=silent -silent_xml=/wls-silent.xml && \ 
+RUN $JAVA_HOME/bin/java -jar wls1036_generic.jar -mode=silent -silent_xml=/wls-silent.xml && \ 
 	rm /wls1036_generic.jar /wls-silent.xml 
 
 #Download create domain script
@@ -47,13 +48,13 @@ RUN echo 'echo BTMHOST=$BTM_HOST:$BTM_PORT' >> /root/.bashrc && \
     echo 'source /root/Oracle/Middleware/user_projects/domains/base_domain/bin/setDomainEnv.sh' >> /root/.bashrc && \
     echo 'source /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/nanoEnvWeblogic.sh' >> /root/.bashrc
 
-RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdWmxkRFlrdDAwcWc' -O wlstratup.sh
+RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdR0VmbmctQ01UanM' -O wlstarup.sh
 
 RUN chmod +x /root/Oracle/Middleware/user_projects/domains/base_domain/bin/*.sh && \
     chmod +x /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/*.sh && \
-    chmod +x /wlstratup.sh
+    chmod +x /wlstarup.sh
 
 # Expose Node Manager default port, and also default http/https ports for admin console
 EXPOSE 7001 5556 8453
 
-CMD ["/wlstratup.sh"]
+CMD ["/wlstarup.sh"]
