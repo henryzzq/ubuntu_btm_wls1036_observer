@@ -20,16 +20,16 @@ RUN echo 'echo BTMHOST=$BTM_HOST:$BTM_PORT' >> /root/.bashrc && \
     echo "echo \"exec 'startWL.sh' to startup weblogic\""  >> /root/.bashrc && \
     echo '**********************************************' >> /root/.bashrc
 
-RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdeHlDdDdCSFkxZWc' -O deployOb.sh
+RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdeHlDdDdCSFkxZWc' -O deployOB.sh
 
 RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29Wdamh5WWY2eVBVY00' -O startWL.sh
 
 
-RUN mv /deployOb.sh /util && \
+RUN mv /deployOB.sh /util && \
     mv /startWL.sh /util && \
     chmod a+x /util/*.sh
     
 # Expose Node Manager default port, and also default http/https ports for admin console
 EXPOSE 7001 5556 8453 36963
 
-CMD ["deployOb.sh && startWL.sh"]
+CMD ["deployOB.sh && startWL.sh"]
