@@ -1,60 +1,35 @@
-FROM zhiqzhao/ubuntu_btm_base:latest
+FROM zhiqzhao/ubuntu_btm_wls1036:latest
 
 MAINTAINER Henry Zhao (https://www.linkedin.com/in/dreamerhenry)
 
 USER root
 
-ENV PATH $PATH:/root/Oracle/Middleware/wlserver_10.3/common/bin:/root/Oracle/Middleware/user_projects/domains/base_domain/bin
-ENV CONFIG_JVM_ARGS '-Djava.security.egd=file:/dev/./urandom'
-ENV JAVA_HOME $JAVA16_HOME
+ENV WLSERVER_HOME /root/Oracle/Middleware/wlserver_10.3
+ENV WLDOMAIN_HOME /root/Oracle/Middleware/user_projects/domains/base_domain
+ENV PATH $PATH:/util
 
-#Download weblogic 10.3.6
-RUN perl gdown.pl 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdbURhaE16NElXbjA' 'wls1036_generic.jar'
-
-#Download silence mode script
-RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdS0N5a1VOYVptZEE' -O wls-silent.xml
-
-RUN mkdir /root/Oracle && \
-    chmod a+xr /root/Oracle
-
-RUN $JAVA_HOME/bin/java -jar wls1036_generic.jar -mode=silent -silent_xml=/wls-silent.xml && \ 
-	rm /wls1036_generic.jar /wls-silent.xml 
-
-#Download create domain script
-RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdQThnYjVnRmUwd2c' -O create-wls-domain.py
-
-RUN mv create-wls-domain.py /root/Oracle && \
-    chmod +x /root/Oracle/create-wls-domain.py
-
-WORKDIR /root/Oracle/Middleware
-
-RUN /root/Oracle/Middleware/wlserver_10.3/common/bin/wlst.sh -skipWLSModuleScanning /root/Oracle/create-wls-domain.py
-
-WORKDIR /
-
-#Download btm observer
-RUN perl gdown.pl 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdQXpWQ1pRMUE0Qmc' 'BTMObserver.zip'
-
-RUN unzip BTMObserver.zip -d /root/Oracle/Middleware/wlserver_10.3
-
-RUN rm BTMObserver.zip
-
-RUN sed -i 's/HOST/$BTM_HOST/' /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/nanoEnvWeblogic.sh && \
-    sed -i 's/PORT/$BTM_PORT/' /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/nanoEnvWeblogic.sh && \
-    sed -i 's/HOST/$BTM_HOST/' /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/nanoEnvWeblogic.cmd && \
-    sed -i 's/PORT/$BTM_PORT/' /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/nanoEnvWeblogic.cmd
+RUN mkdir /observer && \
+    mkdir /util
 
 RUN echo 'echo BTMHOST=$BTM_HOST:$BTM_PORT' >> /root/.bashrc && \
-    echo 'source /root/Oracle/Middleware/user_projects/domains/base_domain/bin/setDomainEnv.sh' >> /root/.bashrc && \
-    echo 'source /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/nanoEnvWeblogic.sh' >> /root/.bashrc
+    echo 'echo WLSERVER_HOME=$WLSERVER_HOME' >> /root/.bashrc && \
+    echo 'echo WLDOMAIN_HOME=$WLDOMAIN_HOME' >> /root/.bashrc && \
+    echo '**********************************************' >> /root/.bashrc && \
+    echo 'echo Usage:' >> /root/.bashrc && \
+    echo "echo \"exec 'deployOB.sh' to deploy observer\"" >> /root/.bashrc && \
+    echo "echo \"exec 'startWL.sh' to startup weblogic\""  >> /root/.bashrc && \
+    echo '**********************************************' >> /root/.bashrc
 
-RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdVUhSZEU2SjY3Ukk' -O wlstarup.sh
+RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdeHlDdDdCSFkxZWc' -O deployOb.sh
 
-RUN chmod +x /root/Oracle/Middleware/user_projects/domains/base_domain/bin/*.sh && \
-    chmod +x /root/Oracle/Middleware/wlserver_10.3/nanoagent/bin/*.sh && \
-    chmod +x /wlstarup.sh
+RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29Wdamh5WWY2eVBVY00' -O startWL.sh
 
+
+RUN mv /deployOb.sh /util && \
+    mv /startWL.sh /util && \
+    chmod a+x /util/*.sh
+    
 # Expose Node Manager default port, and also default http/https ports for admin console
-EXPOSE 7001 5556 8453
+EXPOSE 7001 5556 8453 36963
 
-CMD ["/wlstarup.sh"]
+CMD ["deployOb.sh && startWL.sh"]
