@@ -8,8 +8,7 @@ ENV WLSERVER_HOME /root/Oracle/Middleware/wlserver_10.3
 ENV WLDOMAIN_HOME /root/Oracle/Middleware/user_projects/domains/base_domain
 ENV PATH $PATH:/util
 
-RUN mkdir /observer && \
-    mkdir /util
+RUN mkdir /util
 
 RUN echo 'echo BTMHOST=$BTM_HOST:$BTM_PORT' >> /root/.bashrc && \
     echo 'echo WLSERVER_HOME=$WLSERVER_HOME' >> /root/.bashrc && \
