@@ -23,11 +23,14 @@ RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0
 
 RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29Wdamh5WWY2eVBVY00' -O startWL.sh
 
+RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdaDZRU190MmNCamM' -O main.sh
+
 RUN mv /deployOB.sh /util && \
     mv /startWL.sh /util && \
+    mv /main.sh /util && \
     chmod a+x /util/*.sh
     
 # Expose Node Manager default port, and also default http/https ports for admin console
 EXPOSE 7001 5556 8453 36963
 
-CMD ["deployOB.sh && startWL.sh"]
+CMD ["/util/main.sh"]
