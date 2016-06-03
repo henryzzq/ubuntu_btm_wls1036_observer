@@ -1,4 +1,4 @@
-FROM zhiqzhao/ubuntu_btm_wls1036:latest
+FROM zhiqzhao/ubuntu_btm_wls1036_domain:latest
 
 MAINTAINER Henry Zhao (https://www.linkedin.com/in/dreamerhenry)
 
@@ -23,7 +23,6 @@ RUN echo 'echo BTMHOST=$BTM_HOST:$BTM_PORT' >> /root/.bashrc && \
 RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdeHlDdDdCSFkxZWc' -O deployOB.sh
 
 RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29Wdamh5WWY2eVBVY00' -O startWL.sh
-
 
 RUN mv /deployOB.sh /util && \
     mv /startWL.sh /util && \
