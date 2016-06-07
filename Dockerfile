@@ -13,11 +13,13 @@ RUN mkdir /util
 RUN echo 'echo BTMHOST=$BTM_HOST:$BTM_PORT' >> /root/.bashrc && \
     echo 'echo WLSERVER_HOME=$WLSERVER_HOME' >> /root/.bashrc && \
     echo 'echo WLDOMAIN_HOME=$WLDOMAIN_HOME' >> /root/.bashrc && \
-    echo '**********************************************' >> /root/.bashrc && \
+    echo 'source $WLDOMAIN_HOME/bin/setDomainEnv.sh' >> /root/.bashrc && \
+    echo 'source $WLSERVER_HOME/nanoagent/bin/nanoEnvWeblogic.sh' >> /root/.bashrc && \
+    echo "echo \"**********************************************\"">> /root/.bashrc && \
     echo 'echo Usage:' >> /root/.bashrc && \
     echo "echo \"exec 'deployOB.sh' to deploy observer\"" >> /root/.bashrc && \
     echo "echo \"exec 'startWL.sh' to startup weblogic\""  >> /root/.bashrc && \
-    echo '**********************************************' >> /root/.bashrc
+    echo "echo \"**********************************************\"">> /root/.bashrc
 
 RUN wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0B-NEimEr29WdeHlDdDdCSFkxZWc' -O deployOB.sh
 
